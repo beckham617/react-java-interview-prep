@@ -11,8 +11,6 @@ A sample Node.js Express application demonstrating RESTful API design with prope
 - **Security** - Helmet for security headers
 - **Logging** - Morgan for HTTP request logging
 - **CORS Support** - Cross-origin resource sharing enabled
-- **External API Integration** - SSL/TLS secure external API calls
-- **SSL/TLS Security** - Certificate verification and secure connections
 
 ## 📁 Project Structure
 
@@ -81,17 +79,6 @@ nodejs-api/
 - **DELETE** `/api/products/:id` - Delete product
 - **PATCH** `/api/products/:id/stock` - Update product stock
 
-### External APIs (SSL/TLS)
-- **GET** `/api/external/random-user` - Get random user from external API
-- **GET** `/api/external/users` - Get multiple users from external API
-- **GET** `/api/external/users/:userId/posts` - Get user posts
-- **POST** `/api/external/posts` - Create post via external API
-- **GET** `/api/external/weather/:city` - Get weather data (requires API key)
-- **GET** `/api/external/crypto` - Get cryptocurrency prices
-- **POST** `/api/external/secure-request` - Make secure request to any URL
-- **GET** `/api/external/test-ssl/*` - Test SSL connection
-- **GET** `/api/external/health` - Health check for external APIs
-
 ## 📝 API Examples
 
 ### Create a User
@@ -129,21 +116,6 @@ curl "http://localhost:3000/api/products?search=laptop&inStock=true"
 curl -X PATCH http://localhost:3000/api/products/1/stock \
   -H "Content-Type: application/json" \
   -d '{"quantity": -2}'
-```
-
-### External API Examples
-```bash
-# Get random user from external API
-curl http://localhost:3000/api/external/random-user
-
-# Get cryptocurrency prices
-curl http://localhost:3000/api/external/crypto
-
-# Test SSL connection
-curl "http://localhost:3000/api/external/test-ssl/https://www.google.com"
-
-# Get weather data (requires API key)
-curl "http://localhost:3000/api/external/weather/London?apiKey=YOUR_API_KEY"
 ```
 
 ## 🔧 Configuration

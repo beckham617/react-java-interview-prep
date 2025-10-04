@@ -51,10 +51,10 @@ export default function PortfolioChart() {
             <Line 
               type="monotone" 
               dataKey="value" 
-              stroke="#3b82f6" 
+              stroke="#271e76" 
               strokeWidth={3}
-              dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+              dot={{ fill: '#271e76', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, stroke: '#271e76', strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>

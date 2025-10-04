@@ -1,9 +1,22 @@
 'use client';
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import ClientJoinChart from '@/components/charts/ClientJoinChart';
+import { ClientDataService } from '@/data/clientData';
 import { PieChart, BarChart3, TrendingUp, Activity } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Client } from '@/types/client';
+
 
 export default function AnalyticsPage() {
+  const [clients, setClients] = useState<Client[]>([]);
+
+  useEffect(() => {
+    // Load clients from localStorage
+    const loadedClients = ClientDataService.getClients();
+    setClients(loadedClients);
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -62,6 +75,9 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
+        {/* Client Growth Chart */}
+        <ClientJoinChart clients={clients} />
+
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
           <PieChart className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Advanced Analytics System</h3>
@@ -70,7 +86,7 @@ export default function AnalyticsPage() {
             risk assessment, and performance benchmarking.
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm" style={{ color: '#271e76' }}>
               <strong>Coming Soon:</strong> Machine learning insights, predictive analytics, and advanced risk modeling.
             </p>
           </div>

@@ -70,7 +70,7 @@ export default function ReportsPage() {
             compliance reports, and custom analytics dashboards.
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm" style={{ color: '#271e76' }}>
               <strong>Coming Soon:</strong> Automated report generation, custom dashboards, and data visualization tools.
             </p>
           </div>

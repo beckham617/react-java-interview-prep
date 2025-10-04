@@ -18,11 +18,11 @@ export default function Header() {
           {/* Search */}
           <div className="flex-1 max-w-lg">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-900 z-10" />
               <Input
                 type="text"
                 placeholder="Search clients, trusts, transactions..."
-                className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
+                className="pl-10 bg-gray-50 border-gray-200 focus:bg-white text-gray-900"
               />
             </div>
           </div>
