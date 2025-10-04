@@ -10,7 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { Building2, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -60,15 +61,18 @@ export default function SignUpPage() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
-              <div className="bg-blue-600 p-3 rounded-full">
-                <Building2 className="h-8 w-8 text-white" />
-              </div>
+              <Image 
+                src="/images/logo.webp" 
+                alt="Endeavor Trust Logo" 
+                width={48} 
+                height={48}
+              />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Create Account
             </h2>
             <p className="text-gray-600">
-              Join the Trust Company platform
+              Join the Endeavor Trust platform
             </p>
           </div>
 
@@ -175,7 +179,7 @@ export default function SignUpPage() {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="theme-button w-full"
               disabled={isLoading}
             >
               {isLoading ? 'Creating Account...' : 'Create Account'}

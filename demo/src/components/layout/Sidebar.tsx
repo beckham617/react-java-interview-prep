@@ -39,7 +39,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden fixed top-4 left-4 z-40">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-white p-2 rounded-md shadow-md border border-gray-200"
@@ -51,7 +51,7 @@ export default function Sidebar() {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -59,18 +59,18 @@ export default function Sidebar() {
        {/* Sidebar // #f68e36 #271e76 */}
        <div
          className={cn(
-           'fixed inset-y-0 left-0 z-50 w-64 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0',
+           'fixed inset-y-0 left-0 z-40 w-64 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0',
            isOpen ? 'translate-x-0' : '-translate-x-full'
          )}
          style={{ backgroundColor: '#271e76' }}
        >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200 bg-white">
+          <div className="flex items-center justify-center h-18 px-4 border-b border-gray-200 bg-white">
             <div className="flex items-center space-x-2">
                 <Image 
                   src="/images/logo.webp" 
-                  alt="TrustCo Logo" 
+                  alt="Endeavor Trust Logo" 
                   width={36} 
                   height={36}
                 />
@@ -79,7 +79,7 @@ export default function Sidebar() {
           </div>
 
           {/* User info */}
-          <div className="px-4 py-4 border-b border-gray-200">
+          {/* <div className="px-4 py-4 border-b border-gray-200">
             <div className="flex items-center space-x-3">
               <div className="bg-white p-2 rounded-full">
                 <Users className="h-5 w-5 text-blue-600" />
@@ -89,7 +89,7 @@ export default function Sidebar() {
                 <p className="text-xs text-gray-300 capitalize">{user?.role}</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-4 space-y-2">
@@ -124,6 +124,13 @@ export default function Sidebar() {
               <LogOut className="h-5 w-5" />
               <span>Sign Out</span>
             </button>
+          </div>
+
+          {/* Version */}
+          <div className="px-4 py-2 border-t border-gray-600">
+            <div className="text-right">
+              <p className="text-xs text-gray-400">Version 0.1.0</p>
+            </div>
           </div>
         </div>
       </div>

@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import TransactionDetailModal from '@/components/modals/transactions/TransactionDetailModal';
+import AddTransactionModal from '@/components/modals/transactions/AddTransactionModal';
 import { TransactionDataService } from '@/data/transactionData';
 import { Transaction } from '@/types/transaction';
-import { CreditCard, TrendingUp, AlertCircle, CheckCircle, Search, Eye, Edit, Trash2, MoreVertical, UserPlus, Filter } from 'lucide-react';
+import { CreditCard, TrendingUp, AlertCircle, CheckCircle, Search, Eye, Edit, Trash2, MoreVertical, UserPlus } from 'lucide-react';
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -55,6 +57,54 @@ export default function TransactionsPage() {
     setSearchTerm('');
     setShowNoResults(false);
   }, [transactions]);
+
+  // Modal functions
+  const handleViewTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedTransaction(null);
+    setIsModalOpen(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleAddTransaction = (newTransaction: Omit<Transaction, 'id'>) => {
+    // Generate a new ID (in a real app, this would come from the backend)
+    const maxId = Math.max(...transactions.map(t => t.id), 0);
+    const transactionWithId: Transaction = {
+      ...newTransaction,
+      id: maxId + 1
+    };
+    
+    const updatedTransactions = [...transactions, transactionWithId];
+    setTransactions(updatedTransactions);
+    setDisplayedTransactions(updatedTransactions);
+    setIsAddModalOpen(false);
+  };
+
+  const handleEditTransaction = (transaction: Transaction) => {
+    // In a real app, this would open an edit modal or navigate to edit page
+    console.log('Edit transaction:', transaction);
+  };
+
+  const handleApproveTransaction = (transaction: Transaction) => {
+    // Update transaction status to completed
+    const updatedTransactions = transactions.map(t => 
+      t.id === transaction.id ? { ...t, status: 'Completed' as const } : t
+    );
+    setTransactions(updatedTransactions);
+    setDisplayedTransactions(updatedTransactions);
+    setIsModalOpen(false);
+  };
 
   // Handle delayed "no results" display
   useEffect(() => {
@@ -108,23 +158,6 @@ export default function TransactionsPage() {
     }
   };
 
-  const handleViewTransaction = (id: number) => {
-    const transaction = transactions.find(t => t.id === id);
-    if (transaction) {
-      setSelectedTransaction(transaction);
-      setIsModalOpen(true);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedTransaction(null);
-  };
-
-  const handleEditTransaction = (transaction: Transaction) => {
-    console.log('Edit transaction:', transaction);
-    // TODO: Implement edit functionality
-  };
 
   const handleDeleteTransaction = (id: number) => {
     if (window.confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
@@ -137,7 +170,7 @@ export default function TransactionsPage() {
         
         // Close modal if the deleted transaction was selected
         if (selectedTransaction && selectedTransaction.id === id) {
-          closeModal();
+          handleCloseModal();
         }
         
         console.log('Transaction deleted successfully');
@@ -148,9 +181,6 @@ export default function TransactionsPage() {
     }
   };
 
-  const handleAddTransaction = () => {
-    setIsAddModalOpen(true);
-  };
 
   // Get transaction stats
   const stats = TransactionDataService.getTransactionStats();
@@ -165,7 +195,7 @@ export default function TransactionsPage() {
             <p className="text-gray-600">Monitor and manage all trust transactions and financial activities</p>
           </div>
           <button 
-            onClick={handleAddTransaction}
+            onClick={handleOpenAddModal}
             className="theme-button px-4 py-2 rounded-lg flex items-center space-x-2"
           >
             <UserPlus className="h-4 w-4" />
@@ -356,7 +386,7 @@ export default function TransactionsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex justify-end space-x-2">
-                            <button className="text-blue-600 hover:text-blue-900" onClick={() => handleViewTransaction(transaction.id)}>
+                            <button className="text-blue-600 hover:text-blue-900" onClick={() => handleViewTransaction(transaction)}>
                               <Eye className="h-4 w-4" />
                             </button>
                             <button className="text-green-600 hover:text-green-900" onClick={() => handleEditTransaction(transaction)}>
@@ -444,6 +474,21 @@ export default function TransactionsPage() {
           </>
         )}
       </div>
+
+      {/* Modals */}
+      <TransactionDetailModal
+        transaction={selectedTransaction}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onEdit={handleEditTransaction}
+        onApprove={handleApproveTransaction}
+      />
+
+      <AddTransactionModal
+        isOpen={isAddModalOpen}
+        onClose={handleCloseAddModal}
+        onAddTransaction={handleAddTransaction}
+      />
     </DashboardLayout>
   );
 }

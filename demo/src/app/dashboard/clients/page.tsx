@@ -1,8 +1,8 @@
 'use client';
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import ClientDetailModal from '@/components/modals/ClientDetailModal';
-import AddClientModal from '@/components/modals/AddClientModal';
+import ClientDetailModal from '@/components/modals/clients/ClientDetailModal';
+import AddClientModal from '@/components/modals/clients/AddClientModal';
 import ClientSearchInput from '@/components/search/ClientSearchInput';
 import { ClientDataService } from '@/data/clientData';
 import { Users, UserPlus, FileText, Mail, Search, Filter, MoreVertical, Eye, Edit, Trash2 } from 'lucide-react';
@@ -206,18 +206,6 @@ export default function ClientsPage() {
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center space-x-3">
-              <div className="bg-purple-50 p-3 rounded-full">
-                <FileText className="h-6 w-6 text-purple-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Total AUM</h3>
-                <p className="text-2xl font-bold text-purple-600">$50.3M</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3">
               <div className="bg-orange-50 p-3 rounded-full">
                 <Mail className="h-6 w-6 text-orange-600" />
               </div>
@@ -226,6 +214,18 @@ export default function ClientsPage() {
                 <p className="text-2xl font-bold text-orange-600">
                   {clients.filter(c => c.status === 'Pending').length}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center space-x-3">
+              <div className="bg-purple-50 p-3 rounded-full">
+                <FileText className="h-6 w-6 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Total AUM</h3>
+                <p className="text-2xl font-bold text-purple-600">$50.3M</p>
               </div>
             </div>
           </div>

@@ -39,9 +39,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
+      <Header />
       <div className="lg:pl-64 min-h-screen">
-        <Header />
-        <main className="p-6">
+        <main className="p-6 pt-20">
           {children}
         </main>
       </div>
