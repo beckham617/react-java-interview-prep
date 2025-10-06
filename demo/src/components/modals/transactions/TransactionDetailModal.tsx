@@ -61,12 +61,11 @@ export default function TransactionDetailModal({
     });
   };
 
-  const formatAmount = (amount: string) => {
-    const numAmount = parseFloat(amount);
+  const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
-    }).format(numAmount);
+    }).format(amount);
   };
 
   return (

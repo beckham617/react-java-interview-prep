@@ -158,6 +158,19 @@ export default function TransactionsPage() {
     }
   };
 
+  const formatAmount = (amount: number) => {
+    // Debug logging
+    console.log('formatAmount received:', amount, 'type:', typeof amount);
+    if (isNaN(amount)) {
+      console.error('formatAmount received NaN:', amount);
+      return '$0.00';
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
 
   const handleDeleteTransaction = (id: number) => {
     if (window.confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
@@ -248,7 +261,7 @@ export default function TransactionsPage() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Total Volume</h3>
-                <p className="text-2xl font-bold text-purple-600">{stats.totalAmount}</p>
+                <p className="text-2xl font-bold text-purple-600">{formatAmount(stats.totalAmount)}</p>
               </div>
             </div>
           </div>
@@ -374,7 +387,7 @@ export default function TransactionsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {transaction.amount}
+                          {formatAmount(transaction.amount)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(transaction.status)}`}>

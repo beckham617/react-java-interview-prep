@@ -8,7 +8,7 @@ const initialTransactions: Transaction[] = [
     clientId: 1,
     clientName: 'John Smith',
     type: 'Deposit',
-    amount: '$50,000',
+    amount: 50000,
     status: 'Completed',
     date: '2024-01-15',
     description: 'Initial trust funding deposit',
@@ -23,7 +23,7 @@ const initialTransactions: Transaction[] = [
     clientId: 2,
     clientName: 'Sarah Johnson',
     type: 'Investment',
-    amount: '$125,000',
+    amount: 125000,
     status: 'Completed',
     date: '2024-01-14',
     description: 'Investment in diversified portfolio',
@@ -38,7 +38,7 @@ const initialTransactions: Transaction[] = [
     clientId: 3,
     clientName: 'Michael Chen',
     type: 'Withdrawal',
-    amount: '$25,000',
+    amount: 25000,
     status: 'Pending',
     date: '2024-01-13',
     description: 'Quarterly distribution to beneficiary',
@@ -53,7 +53,7 @@ const initialTransactions: Transaction[] = [
     clientId: 4,
     clientName: 'Emily Rodriguez',
     type: 'Transfer',
-    amount: '$75,000',
+    amount: 75000,
     status: 'Completed',
     date: '2024-01-12',
     description: 'Transfer between trust accounts',
@@ -68,7 +68,7 @@ const initialTransactions: Transaction[] = [
     clientId: 5,
     clientName: 'David Thompson',
     type: 'Deposit',
-    amount: '$200,000',
+    amount: 200000,
     status: 'Completed',
     date: '2024-01-11',
     description: 'Additional funding for real estate investment',
@@ -83,7 +83,7 @@ const initialTransactions: Transaction[] = [
     clientId: 6,
     clientName: 'Lisa Anderson',
     type: 'Distribution',
-    amount: '$15,000',
+    amount: 15000,
     status: 'Completed',
     date: '2024-01-10',
     description: 'Monthly distribution to beneficiaries',
@@ -98,7 +98,7 @@ const initialTransactions: Transaction[] = [
     clientId: 7,
     clientName: 'Robert Wilson',
     type: 'Investment',
-    amount: '$300,000',
+    amount: 300000,
     status: 'Failed',
     date: '2024-01-09',
     description: 'Investment in private equity fund',
@@ -112,7 +112,7 @@ const initialTransactions: Transaction[] = [
     clientId: 8,
     clientName: 'Jennifer Brown',
     type: 'Withdrawal',
-    amount: '$40,000',
+    amount: 40000,
     status: 'Completed',
     date: '2024-01-08',
     description: 'Emergency withdrawal for medical expenses',
@@ -127,7 +127,7 @@ const initialTransactions: Transaction[] = [
     clientId: 9,
     clientName: 'Alex Martinez',
     type: 'Deposit',
-    amount: '$80,000',
+    amount: 80000,
     status: 'Pending',
     date: '2024-01-07',
     description: 'Series A funding deposit',
@@ -141,7 +141,7 @@ const initialTransactions: Transaction[] = [
     clientId: 10,
     clientName: 'Maria Garcia',
     type: 'Transfer',
-    amount: '$150,000',
+    amount: 150000,
     status: 'Completed',
     date: '2024-01-06',
     description: 'Transfer to international investment account',
@@ -156,7 +156,7 @@ const initialTransactions: Transaction[] = [
     clientId: 11,
     clientName: 'James Wilson',
     type: 'Investment',
-    amount: '$500,000',
+    amount: 500000,
     status: 'Completed',
     date: '2024-01-05',
     description: 'Investment in sustainable energy fund',
@@ -171,7 +171,7 @@ const initialTransactions: Transaction[] = [
     clientId: 12,
     clientName: 'Sarah Davis',
     type: 'Distribution',
-    amount: '$30,000',
+    amount: 30000,
     status: 'Cancelled',
     date: '2024-01-04',
     description: 'Quarterly distribution to beneficiaries',
@@ -185,7 +185,7 @@ const initialTransactions: Transaction[] = [
     clientId: 1,
     clientName: 'John Smith',
     type: 'Investment',
-    amount: '$35,000',
+    amount: 35000,
     status: 'Completed',
     date: '2024-01-03',
     description: 'Investment in bond portfolio',
@@ -200,7 +200,7 @@ const initialTransactions: Transaction[] = [
     clientId: 2,
     clientName: 'Sarah Johnson',
     type: 'Withdrawal',
-    amount: '$10,000',
+    amount: 10000,
     status: 'Completed',
     date: '2024-01-02',
     description: 'Educational expense withdrawal',
@@ -215,7 +215,7 @@ const initialTransactions: Transaction[] = [
     clientId: 3,
     clientName: 'Michael Chen',
     type: 'Deposit',
-    amount: '$100,000',
+    amount: 100000,
     status: 'Pending',
     date: '2024-01-01',
     description: 'Year-end bonus deposit',
@@ -234,7 +234,25 @@ export const TransactionDataService = {
     try {
       const data = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (data) {
-        return JSON.parse(data) as Transaction[];
+        const transactions = JSON.parse(data) as Transaction[];
+        // Migrate old string amounts to numeric amounts
+        const migratedTransactions = transactions.map(transaction => {
+          const originalAmount = transaction.amount;
+          const migratedAmount = typeof transaction.amount === 'string' 
+            ? parseFloat((transaction.amount as string).replace(/[$,]/g, '')) || 0
+            : transaction.amount;
+          
+          // Debug logging
+          if (typeof originalAmount === 'string') {
+            console.log(`Migrating amount: "${originalAmount}" -> ${migratedAmount}`);
+          }
+          
+          return {
+            ...transaction,
+            amount: migratedAmount
+          };
+        });
+        return migratedTransactions;
       }
     } catch (error) {
       console.error("Error reading from localStorage", error);
@@ -304,10 +322,10 @@ export const TransactionDataService = {
     const failed = transactions.filter(t => t.status === 'Failed').length;
     const cancelled = transactions.filter(t => t.status === 'Cancelled').length;
     
-    // Calculate total amounts (simplified - in real app would parse currency)
+    // Calculate total amounts
     const totalAmount = transactions
       .filter(t => t.status === 'Completed')
-      .reduce((sum, t) => sum + parseFloat(t.amount.replace(/[$,]/g, '')), 0);
+      .reduce((sum, t) => sum + t.amount, 0);
 
     return { 
       total, 
@@ -315,13 +333,35 @@ export const TransactionDataService = {
       pending, 
       failed, 
       cancelled, 
-      totalAmount: `$${totalAmount.toLocaleString()}` 
+      totalAmount 
     };
   },
 
   resetToMockData: (): Transaction[] => {
     TransactionDataService.saveTransactions(initialTransactions);
     return initialTransactions;
+  },
+
+  clearAndReset: (): Transaction[] => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      console.log('Cleared localStorage and reset to initial data');
+    }
+    TransactionDataService.saveTransactions(initialTransactions);
+    return initialTransactions;
+  },
+
+  // Temporary debugging function
+  debugData: () => {
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+      console.log('localStorage data:', data);
+      if (data) {
+        const parsed = JSON.parse(data);
+        console.log('Parsed data:', parsed);
+        console.log('First transaction amount:', parsed[0]?.amount, 'type:', typeof parsed[0]?.amount);
+      }
+    }
   },
 
   clearAllData: (): void => {

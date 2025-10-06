@@ -96,7 +96,10 @@ export default function RecentTransactions() {
                 </td>
                 <td className="py-3 px-2">
                   <span className="text-sm font-medium text-gray-900">
-                    ${transaction.amount.toLocaleString()}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD'
+                    }).format(transaction.amount)}
                   </span>
                 </td>
                 <td className="py-3 px-2">

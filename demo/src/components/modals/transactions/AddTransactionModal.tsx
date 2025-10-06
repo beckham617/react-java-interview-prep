@@ -15,7 +15,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
     clientId: '',
     clientName: '',
     type: 'Deposit' as Transaction['type'],
-    amount: '',
+    amount: 0,
     status: 'Pending' as Transaction['status'],
     date: new Date().toISOString().split('T')[0],
     description: '',
@@ -44,9 +44,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
     if (!formData.clientName.trim()) {
       newErrors.clientName = 'Client name is required';
     }
-    if (!formData.amount.trim()) {
-      newErrors.amount = 'Amount is required';
-    } else if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
+    if (!formData.amount || formData.amount <= 0) {
       newErrors.amount = 'Amount must be a positive number';
     }
     if (!formData.description.trim()) {
@@ -86,7 +84,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
       clientId: '',
       clientName: '',
       type: 'Deposit',
-      amount: '',
+      amount: 0,
       status: 'Pending',
       date: new Date().toISOString().split('T')[0],
       description: '',
@@ -101,7 +99,12 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'amount') {
+      const numericValue = parseFloat(value) || 0;
+      setFormData(prev => ({ ...prev, [field]: numericValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
@@ -138,7 +141,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="text"
                 value={formData.clientId}
                 onChange={(e) => handleInputChange('clientId', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white ${
                   errors.clientId ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter client ID"
@@ -156,7 +159,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="text"
                 value={formData.clientName}
                 onChange={(e) => handleInputChange('clientName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white ${
                   errors.clientName ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter client name"
@@ -176,7 +179,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
               <select
                 value={formData.type}
                 onChange={(e) => handleInputChange('type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               >
                 <option value="Deposit">Deposit</option>
                 <option value="Withdrawal">Withdrawal</option>
@@ -191,13 +194,15 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 Amount *
               </label>
               <input
-                type="text"
-                value={formData.amount}
+                type="number"
+                value={formData.amount || ''}
                 onChange={(e) => handleInputChange('amount', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white ${
                   errors.amount ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter amount"
+                min="0"
+                step="0.01"
               />
               {errors.amount && (
                 <p className="mt-1 text-sm text-red-600">{errors.amount}</p>
@@ -214,7 +219,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
               <select
                 value={formData.status}
                 onChange={(e) => handleInputChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               >
                 <option value="Pending">Pending</option>
                 <option value="Completed">Completed</option>
@@ -231,7 +236,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleInputChange('date', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -245,7 +250,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               rows={3}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white ${
                 errors.description ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Enter transaction description"
@@ -263,7 +268,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
               type="text"
               value={formData.reference}
               onChange={(e) => handleInputChange('reference', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white ${
                 errors.reference ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Enter reference number"
@@ -283,7 +288,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="text"
                 value={formData.accountFrom}
                 onChange={(e) => handleInputChange('accountFrom', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white"
                 placeholder="Enter source account"
               />
             </div>
@@ -296,7 +301,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="text"
                 value={formData.accountTo}
                 onChange={(e) => handleInputChange('accountTo', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white"
                 placeholder="Enter destination account"
               />
             </div>
@@ -312,7 +317,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 type="text"
                 value={formData.approvedBy}
                 onChange={(e) => handleInputChange('approvedBy', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white"
                 placeholder="Enter approver name"
               />
             </div>
@@ -325,7 +330,7 @@ export default function AddTransactionModal({ isOpen, onClose, onAddTransaction 
                 value={formData.notes}
                 onChange={(e) => handleInputChange('notes', e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500 bg-white"
                 placeholder="Enter additional notes"
               />
             </div>

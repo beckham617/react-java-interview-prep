@@ -3,7 +3,7 @@ export type Transaction = {
   clientId: number;
   clientName: string;
   type: 'Deposit' | 'Withdrawal' | 'Transfer' | 'Investment' | 'Distribution';
-  amount: string;
+  amount: number;
   status: 'Pending' | 'Completed' | 'Failed' | 'Cancelled';
   date: string;
   description: string;
