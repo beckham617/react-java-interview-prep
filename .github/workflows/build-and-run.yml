@@ -1,0 +1,58 @@
+name: Build and Deploy on Merge
+
+on:
+  push:
+    branches:
+      // - main
+      - uat
+
+jobs:
+  build_and_run:
+    name: Build and Run Docker Container
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure full history for accurate branch info
+
+      - name: Verify branch
+        run: |
+          echo "Current branch is $GITHUB_REF_NAME"
+          if [[ "$GITHUB_REF_NAME" != "main" && "$GITHUB_REF_NAME" != "uat" ]]; then
+            echo "Not main or uat branch. Exiting..."
+            exit 0
+          fi
+
+      - name: Pull latest code
+        run: |
+          git fetch origin
+          git checkout $GITHUB_REF_NAME
+          git pull origin $GITHUB_REF_NAME
+
+      - name: Change directory to service folder
+        working-directory: ./demo  # 👈 change this to your actual subfolder
+        run: |
+          echo "Switched to backend directory: $(pwd)"
+
+      - name: Build Docker image
+        working-directory: ./demo
+        run: |
+          IMAGE_NAME="demo-${GITHUB_REF_NAME}"
+          docker build -t $IMAGE_NAME:latest .
+
+      - name: Stop and remove old container if exists
+        run: |
+          CONTAINER_NAME="demo-${GITHUB_REF_NAME}"
+          docker stop $CONTAINER_NAME || true
+          docker rm $CONTAINER_NAME || true
+
+      - name: Run new Docker container
+        run: |
+          CONTAINER_NAME="demo-${GITHUB_REF_NAME}"
+          IMAGE_NAME="demo-${GITHUB_REF_NAME}"
+          docker run -d \
+            --name $CONTAINER_NAME \
+            -p 3000:3000 \
+            $IMAGE_NAME:latest
